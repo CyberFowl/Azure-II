@@ -95,7 +95,9 @@ class MyClient(discord.Client):
                 embed.add_field(name = ":jigsaw: Misc Commands", value = """z!spotify - sends a spotify link to your liked songs""", inline = False)
                 embed.add_field(name = ":shield: Failsafe Commands", value = """z!exit - shuts the bot down. :warning: No way to restart the bot unless <@!817633704330526752> restarts manually :warning:""", inline = False)
                 embed.set_footer(text = "Help Menu, by fizz#1707")
-                await message.channel.send(embed = embed)
+                help_embed = await message.channel.send(embed = embed)
+                emoji = '\U0001F4A1'
+                await message.add_reaction(emoji)
                 tipsend = await message.channel.send(tips[tip])
                 sleep(5)
                 await tipsend.delete()
@@ -220,6 +222,25 @@ class MyClient(discord.Client):
                     await message.channel.send("Here it is:")
                     await message.channel.send(flink)
 
+        #File Handling
+                if mcu == "Z!FILE":
+                    embed = discord.Embed(title = "File Handling", description = """Read Only - 'r'
+                    Read and Write - 'r+'
+                    Write Only - 'w'
+                    Write and Read - 'w+'
+                    Append Only - 'a'
+                    Append and Read - 'a+'""")
+                    embed.set_footer(text = "File Handler, by fizz#1707")
+                    await message.channel.send(embed = embed)
+
+                if mcu.startswith("Z!FILE") and len(mcu) > 6:
+                    print("File Handling")
+                    access_mode = justmc.split(" ")[1]
+                    constants_py = open("constants.py", access_mode)
+                    if access_mode == "r":
+                        constants_py.readlines()
+
+
     #Rammy
             if message.author.id == rammy:
                 
@@ -252,6 +273,19 @@ class MyClient(discord.Client):
                     await message.channel.send("Here it is:")
                     await message.channel.send(vlink)
 
+    #The Tester's Paradise
+            if mcu.startswith("Z!TEST"):
+                print(justmc)
+
+            if mcu == "Z!TESTRR":
+                reactionmsg = await message.channel.send("This is a reaction role test")
+                bulb = '\U0001F4A1'
+                await reactionmsg.add_reaction(bulb)
+                for user in reaction.users():
+                    role = discord.Object(826796232919482369)
+                    await user.add_roles(role)
+                    await message.channel.send("Test successful?")
+
     #Failsafe
             if mcu == "Z!EXIT":
                 await message.delete()
@@ -261,11 +295,6 @@ class MyClient(discord.Client):
                 print("Azure The Second was shutdown by " + str(message.author))
                 sys.exit()
     
-async def foo():
-    async with aiohttp.ClientSession() as session:
-        webhook = Webhook.from_url('https://discord.com/api/webhooks/829285264429154316/dXjxi4ozpH9JabUWObrNM3RP30Be5NSOSFVhQHHvyFmrJko3B2OVFksJQJXKQzEw1sDj', adapter=AsyncWebhookAdapter(session))
-        await webhook.send('Hello World', username='Tester')
-
 
 print("Booting up...")
 
