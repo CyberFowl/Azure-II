@@ -238,7 +238,8 @@ class MyClient(discord.Client):
                     access_mode = justmc.split(" ")[1]
                     constants_py = open("constants.py", access_mode)
                     if access_mode == "r":
-                        constants_py.readlines()
+                        readdoc = constants_py.readlines()
+                        await message.channel.send(readdoc)
 
 
     #Rammy
