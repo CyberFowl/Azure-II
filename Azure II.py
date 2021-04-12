@@ -76,22 +76,25 @@ class MyClient(discord.Client):
     #Roles
             invisi_role = discord.Object(827081315123724319)
 
+    #Other
+            space = " "
+
 #Commands
     #Help
             if mcu == "Z!HELP":
                 embed = discord.Embed(title = "Help Menu")
                 embed.add_field(name = ":bar_chart: Stat Commands:", value = """z!begin - shows the last restart time in IST
-                z!ping - shows the ping/latency
-                z!stats - shows all the stats""", inline = False)
+z!ping - shows the ping/latency
+z!stats - shows all the stats""", inline = False)
                 embed.add_field(name = ":hammer_pick: Utility Commands", value = """z!purge <limit> - purges *[x]* messages (less than 1000 at a time)
-                z!avatar - shows your avatar
-                z!invis - makes your name invisible
-                z!rminvis - makes your name visible again
-                z!embed <content> - puts your text in an embed
-                z!plan <content> - adds a plan in <#826117936271589377>""", inline = False)
+z!avatar - shows your avatar
+z!invis - makes your name invisible
+z!rminvis - makes your name visible again
+z!embed <content> - puts your text in an embed
+z!plan <content> - adds a plan in <#826117936271589377>""", inline = False)
                 embed.add_field(name = ":question: Chance Commands", value = """z!8ball <question> - replies to a yes/no question
                 z!coinflip - flips a coin
-                z!dice - rolls a dice (1-6)""", inline = False)
+z!dice - rolls a dice (1-6)""", inline = False)
                 embed.add_field(name = ":jigsaw: Misc Commands", value = """z!spotify - sends a spotify link to your liked songs""", inline = False)
                 embed.add_field(name = ":shield: Failsafe Commands", value = """z!exit - shuts the bot down. :warning: No way to restart the bot unless <@!817633704330526752> restarts manually :warning:""", inline = False)
                 embed.set_footer(text = "Help Menu, by fizz#1707")
@@ -105,11 +108,11 @@ class MyClient(discord.Client):
             if mcu == "Z!MHELP":
                 embed = discord.Embed(title = "Member specific help menu")
                 embed.add_field(name = "Fizz Commands (prefix:z!f)", value = """z!flink <paste a link here> - Remembers a link to be referenced later
-                z!flink - Displays the remembered link""", inline = False)
+z!flink - Displays the remembered link""", inline = False)
                 embed.add_field(name = "Rammy Commands (prefix:z!r)", value = """z!rlink <paste a link here> - Remembers a link to be referenced later
-                z!rlink - Displays the remembered link""", inline = False)
+z!rlink - Displays the remembered link""", inline = False)
                 embed.add_field(name = "Vaidehi Commands(prefix:z!v)", value = """z!vlink <paste a link here> - Remembers a link to be referenced later
-                z!vlink - Displays the remembered link""", inline = False)
+z!vlink - Displays the remembered link""", inline = False)
                 embed.set_footer(text = "Help Menu, by fizz#1707")
                 await message.channel.send(embed = embed)
                 tipsend = await message.channel.send(tips[tip])
@@ -224,22 +227,39 @@ class MyClient(discord.Client):
 
         #File Handling
                 if mcu == "Z!FILE":
-                    embed = discord.Embed(title = "File Handling", description = """Read Only - 'r'
-                    Read and Write - 'r+'
-                    Write Only - 'w'
-                    Write and Read - 'w+'
-                    Append Only - 'a'
-                    Append and Read - 'a+'""")
+                    embed = discord.Embed(title = "File Handling", description = """Read - 'r'
+Write - 'w'
+Append - 'a'""")
                     embed.set_footer(text = "File Handler, by fizz#1707")
                     await message.channel.send(embed = embed)
 
                 if mcu.startswith("Z!FILE") and len(mcu) > 6:
-                    print("File Handling")
                     access_mode = justmc.split(" ")[1]
-                    constants_py = open("constants.py", access_mode)
+                    constants_txt = open("constants.txt", access_mode)
+
                     if access_mode == "r":
-                        readdoc = constants_py.readlines()
-                        await message.channel.send(readdoc)
+                        print("File Reader")
+                        readdoc = constants_txt.readlines()
+                        string = space.join(readdoc)
+                        embed = discord.Embed(title = "Constants.txt - Content", description = string)
+                        embed.set_footer(text = "File Reader, by fizz#1707")
+                        await message.channel.send(embed = embed)
+                    if access_mode == "w":
+                        print("File Writer")
+                        write_string = justmc.split(" ")[2:]
+                        space = " "
+                        string = space.join(write_string)
+                        writedoc = constants_txt.write(string + "\n")
+                        await message.channel.send("Overwritten file :grin:")
+                    if access_mode == "a":
+                        print("File Appender")
+                        write_string = justmc.split(" ")[2:]
+                        space = " "
+                        string = space.join(write_string)
+                        writedoc = constants_txt.write(string + "\n")
+                        await message.channel.send("Text appended :+1:")
+
+                    constants_txt.close()
 
 
     #Rammy
