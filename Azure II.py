@@ -221,11 +221,11 @@ Append - 'a'""")
                 await message.channel.send(embed = embed)
 
             if mcu == "Z!FILE R":
-                constants_txt = open("constants.txt", "r")
+                autotype_txt = open("autotype.txt", "r")
                 print("File Reader")
-                readdoc = constants_txt.readlines()
+                readdoc = autotype_txt.readlines()
                 string = space.join(readdoc)
-                embed = discord.Embed(title = "Constants.txt - Content", description = string)
+                embed = discord.Embed(title = "AutoType.txt - Content", description = string)
                 embed.set_footer(text = "File Reader, by fizz#1707")
                 await message.channel.send(embed = embed)
 
@@ -270,24 +270,24 @@ Append - 'a'""")
 
                 if mcu.startswith("Z!FILE") and len(mcu) > 6:
                     access_mode = justmc.split(" ")[1]
-                    constants_txt = open("constants.txt", access_mode)
+                    autotype_txt = open("autotype.txt", access_mode)
 
                     if access_mode == "w":
                         print("File Writer")
                         write_string = justmc.split(" ")[2:]
                         space = " "
                         string = space.join(write_string)
-                        writedoc = constants_txt.write(string + "\n")
+                        writedoc = autotype_txt.write(string + "\n")
                         await message.channel.send("Overwritten file :grin:")
                     if access_mode == "a":
                         print("File Appender")
                         write_string = justmc.split(" ")[2:]
                         space = " "
                         string = space.join(write_string)
-                        writedoc = constants_txt.write(string + "\n")
+                        writedoc = autotype_txt.write(string + "\n")
                         await message.channel.send("Text appended :+1:")
 
-                    constants_txt.close()
+                    autotype_txt.close()
 
 
     #Rammy
