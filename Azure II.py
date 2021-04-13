@@ -11,7 +11,12 @@ class MyClient(discord.Client):
     async def on_ready(self):
         print("Azure The Second online!")
 
-        await client.change_presence(activity = discord.Activity(type = discord.ActivityType.listening, name = "The Trio talk"))
+        games = ["with fizz#1707", "z!help", "https://github.com/CyberFowl/Azure-II/", "with Azure"]
+        choice = random.randint(0, len(games)-1)
+
+        game = discord.Game(games[choice])
+        await client.change_presence(status=discord.Status.dnd, activity=game)
+
 
     async def on_message(self, message):
         
@@ -137,9 +142,9 @@ z!vlink - Displays the remembered link""", inline = False)
                 embed.add_field(name = ":clock1030: Last restart time", value = restart_time, inline = False)
                 embed.set_footer(text = "Stats, by fizz#1707")
                 await message.channel.send(embed = embed)
-                await message.channel.send(tip)
+                tipsend = await message.channel.send(tips[tip])
                 sleep(5)
-                await message.channel.purge(limit = 1)
+                await tipsend.delete()
 
     #Utility
             if mcu.startswith("Z!PURGE"):
@@ -150,6 +155,9 @@ z!vlink - Displays the remembered link""", inline = False)
                     sleep(2)
                     await message.channel.purge(limit = 1)
                     print(purge + " messages purged")
+                if int(purge) >= 1000:
+                    await message.channel.send("Purge limit exceeded. Please specify a number below 1000.")
+                    print("Purge limit exceeded")
 
             if mcu.startswith("Z!PLAN"):
                 content = justmc.split(" ")[1:]
@@ -195,6 +203,33 @@ z!vlink - Displays the remembered link""", inline = False)
                 embed.set_footer(text = "Spotify, by fizz#1707")
                 await message.channel.send(embed = embed)
 
+            if mcu.startswith("Z!PING") and len(mcu) > 10:
+                content = justmc.split(" ")[-1]
+                for i in range(1,11):
+                    await message.channel.send(content)
+
+            if mcu == "Z!REPO":
+                embed = discord.Embed(title = "Azure II Repo", url = "https://github.com/CyberFowl/Azure-II/")
+                embed.set_footer(text = "Repository, by fizz#1707")
+                await message.channel.send(embed = embed)
+
+            if mcu == "Z!FILE":
+                embed = discord.Embed(title = "File Handling", description = """Read - 'r'
+Write - 'w'
+Append - 'a'""")
+                embed.set_footer(text = "File Handler, by fizz#1707")
+                await message.channel.send(embed = embed)
+
+            if mcu == "Z!FILE R":
+                constants_txt = open("constants.txt", "r")
+                print("File Reader")
+                readdoc = constants_txt.readlines()
+                string = space.join(readdoc)
+                embed = discord.Embed(title = "Constants.txt - Content", description = string)
+                embed.set_footer(text = "File Reader, by fizz#1707")
+                await message.channel.send(embed = embed)
+
+
     #Chance
         
             if mcu.startswith("Z!8BALL"):
@@ -237,13 +272,6 @@ Append - 'a'""")
                     access_mode = justmc.split(" ")[1]
                     constants_txt = open("constants.txt", access_mode)
 
-                    if access_mode == "r":
-                        print("File Reader")
-                        readdoc = constants_txt.readlines()
-                        string = space.join(readdoc)
-                        embed = discord.Embed(title = "Constants.txt - Content", description = string)
-                        embed.set_footer(text = "File Reader, by fizz#1707")
-                        await message.channel.send(embed = embed)
                     if access_mode == "w":
                         print("File Writer")
                         write_string = justmc.split(" ")[2:]
@@ -315,7 +343,7 @@ Append - 'a'""")
                 await shutdown_msg.edit(content = "<@!" + str(fizz) + ">, Azure The Second was shutdown by <@!" + str(message.author.id) + ">")
                 print("Azure The Second was shutdown by " + str(message.author))
                 sys.exit()
-    
+
 
 print("Booting up...")
 
