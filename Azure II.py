@@ -275,17 +275,36 @@ Append - 'a'""")
                     if access_mode == "w":
                         print("File Writer")
                         write_string = justmc.split(" ")[2:]
-                        space = " "
                         string = space.join(write_string)
                         writedoc = autotype_txt.write(string + "\n")
                         await message.channel.send("Overwritten file :grin:")
+
+                        readdoc = autotype_txt.readlines()
+                        string = space.join(readdoc)
+                        embed = discord.Embed(title = "AutoType.txt - Content", description = string)
+                        embed.set_footer(text = "File Reader, by fizz#1707")
+                        display = await message.channel.send(embed = embed)
+                        sleep(4)
+                        edit = await display.edit(content = "Type 'z!file r' to display it without deleting")
+                        sleep(2)
+                        await readdoc.delete()
+
                     if access_mode == "a":
                         print("File Appender")
                         write_string = justmc.split(" ")[2:]
-                        space = " "
                         string = space.join(write_string)
                         writedoc = autotype_txt.write(string + "\n")
                         await message.channel.send("Text appended :+1:")
+
+                        readdoc = autotype_txt.readlines()
+                        string = space.join(readdoc)
+                        embed = discord.Embed(title = "AutoType.txt - Content", description = string)
+                        embed.set_footer(text = "File Reader, by fizz#1707")
+                        display = await message.channel.send(embed = embed)
+                        sleep(4)
+                        edit = await display.edit(content = "Type 'z!file' r to display it without deleting")
+                        sleep(2)
+                        await edit.delete()
 
                     autotype_txt.close()
 
