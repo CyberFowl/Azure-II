@@ -11,7 +11,7 @@ class MyClient(discord.Client):
     async def on_ready(self):
         print("Azure The Second online!")
 
-        games = ["with fizz#1707", "z!help", "https://github.com/CyberFowl/Azure-II/", "with Azure"]
+        games = ["with fizz#1707", "z!help", "GitHub.com/CyberFowl/Azure-II/", "with Azure", "tag", "WolfQuest"]
         choice = random.randint(0, len(games)-1)
 
         game = discord.Game(games[choice])
@@ -98,7 +98,7 @@ z!rminvis - makes your name visible again
 z!embed <content> - puts your text in an embed
 z!plan <content> - adds a plan in <#826117936271589377>""", inline = False)
                 embed.add_field(name = ":question: Chance Commands", value = """z!8ball <question> - replies to a yes/no question
-                z!coinflip - flips a coin
+z!coinflip - flips a coin
 z!dice - rolls a dice (1-6)""", inline = False)
                 embed.add_field(name = ":jigsaw: Misc Commands", value = """z!spotify - sends a spotify link to your liked songs""", inline = False)
                 embed.add_field(name = ":shield: Failsafe Commands", value = """z!exit - shuts the bot down. :warning: No way to restart the bot unless <@!817633704330526752> restarts manually :warning:""", inline = False)
@@ -171,7 +171,14 @@ z!vlink - Displays the remembered link""", inline = False)
 
             if mcu == "Z!AVATAR":
                 print(str(message.author) + " avatar")
-                await message.channel.send("https://cdn.discordapp.com/avatars/" + str(message.author.id) + "/" + str(message.author.avatar) + ".png?size=128")
+                await message.channel.send(str(message.author.avatar_url))
+
+            if mcu.startswith("Z!AVATAR") and "<@" in mcu:
+                user_id = mcu[-19:-1]
+                print(len(str(user_id)))
+                print(user_id)
+                user = client.get_user(user_id)
+                await message.channel.send(str(user.avatar_url))
 
             if mcu == "Z!INVIS" and mgi == trio_id:
                 print(str(message.author) + " going invis")
@@ -194,6 +201,39 @@ z!vlink - Displays the remembered link""", inline = False)
                 embed = discord.Embed(title = string)
                 embed.set_footer(text = "Embedify, by fizz#1707")
                 await message.channel.send(embed = embed)
+
+            if mcu == "Z!RICHEMBED":
+                embed = discord.Embed(title = "Rich Embed", description = "To make a full embed", color = 0xff0000)
+                embed.set_author(name = message.author, icon_url = message.author.avatar_url)
+                embed.add_field(name = "Syntax - z!richembed,title,description,url,field,value", value = "*Remember to add the commas*", inline = False)
+                embed.add_field(name = "Title", value = "Title of the embed", inline = False)
+                embed.add_field(name = "Description", value = "Description of the embed", inline = False)
+                embed.add_field(name = "Url", value = "Url in the title", inline = False)
+                embed.add_field(name = "Field", value = "Title of the first field", inline = False)
+                embed.add_field(name = "Value", value = "description of the first field", inline = False)
+                embed.set_footer(text = "Rich Embed Help, by fizz#1707", icon_url = "https://cdn.discordapp.com/avatars/826795796640563230/ba3b1563a71e0ad8433d07a7ad66c4d7.png?size=128")
+                await message.channel.send(embed = embed)
+            if mcu.startswith("Z!RICHEMBED") and len(mcu) > 12:
+                print("Rich Embed")
+                title = justmc.split(",")[1]
+                desc = justmc.split(",")[2]
+                url = justmc.split(",")[3]
+                field = justmc.split(",")[4]
+                value = justmc.split(",")[5]
+                video = justmc.split(",")[6]
+                embed = discord.Embed(title = title, description = desc, url = url, color = 0xff0000)
+                embed.set_author(name = message.author, url = message.author.avatar_url, icon_url = message.author.avatar_url)
+                embed.set_thumbnail(url = video)#"https://cdn.discordapp.com/avatars/826795796640563230/ba3b1563a71e0ad8433d07a7ad66c4d7.png?size=128")
+                embed.add_field(name = field, value = value, inline = False)
+                embed.set_footer(text = "Rich Embed, by fizz#1707", icon_url = "https://cdn.discordapp.com/avatars/826795796640563230/ba3b1563a71e0ad8433d07a7ad66c4d7.png?size=128")
+                await message.channel.send(embed = embed)
+            if mcu.startswith("Z!MEDEMBED"):
+                media = justmc.split(" ")[1]
+                embed = discord.Embed(color = 0xff0000)
+                embed.set_image(url = media)
+#                embed.set_footer(text = "Media Embed, by fizz#1707", icon_url = "https://cdn.discordapp.com/avatars/826795796640563230/ba3b1563a71e0ad8433d07a7ad66c4d7.png?size=128")
+                await message.channel.send(embed = embed)
+
 
     #Misc
         
@@ -343,16 +383,16 @@ Append - 'a'""")
 
     #The Tester's Paradise
             if mcu.startswith("Z!TEST"):
-                print(justmc)
-
-            if mcu == "Z!TESTRR":
-                reactionmsg = await message.channel.send("This is a reaction role test")
-                bulb = '\U0001F4A1'
-                await reactionmsg.add_reaction(bulb)
-                for user in reaction.users():
-                    role = discord.Object(826796232919482369)
-                    await user.add_roles(role)
-                    await message.channel.send("Test successful?")
+                embed = discord.Embed(title = "Test Embed:", description = "The description goes here", url = "https://hackclub.us/help-menu/", color = 0xff0000)
+                embed.set_thumbnail(url = "https://i.ytimg.com/vi/APm9IBNb344/maxresdefault.jpg")
+                embed.set_image(url = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.onlinepianist.com%2Fpiano-songs%2Frick-astley%2Fnever-gonna-give-you-up&psig=AOvVaw2Ji9fBpZFhjsQ9_WeeLjNT&ust=1618614741398000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODa17GwgfACFQAAAAAdAAAAABAD")
+                embed.add_field(name = "Field 1", value = "This is an `inline = False` field", inline = False)
+                embed.add_field(name = "Field 2", value = "This is the first `inline = True`/default field", inline = True)
+                embed.add_field(name = "Field 3", value = "This is the second `inline = True`/default field", inline = True)
+                embed.set_footer(text = "This is the footer", icon_url = "https://cdn.discordapp.com/avatars/826795796640563230/ba3b1563a71e0ad8433d07a7ad66c4d7.png?size=128")
+                embed.set_author(name = "This is the author's name and url", url = "https://github.com/CyberFowl/Azure-II/", icon_url = "https://cdn.discordapp.com/avatars/817633704330526752/d4099d4af531a57bcd07d53f2e859bc6.png?size=128")
+                await message.channel.send(embed = embed)
+                
 
     #Failsafe
             if mcu == "Z!EXIT":
