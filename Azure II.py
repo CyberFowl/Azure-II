@@ -4,6 +4,7 @@ from config import token
 import random
 import sys
 from time import time, ctime, sleep
+import base64
 
 t = time()
 
@@ -172,26 +173,23 @@ z!vlink - Displays the remembered link""", inline = False)
             if mcu == "Z!AVATAR":
                 print(str(message.author) + " avatar")
                 await message.channel.send(str(message.author.avatar_url))
-
             if mcu.startswith("Z!AVATAR") and "<@" in mcu:
                 user_id = mcu[-19:-1]
-                print(len(str(user_id)))
-                print(user_id)
-                user = client.get_user(user_id)
+                user = await client.fetch_user(user_id)
                 await message.channel.send(str(user.avatar_url))
 
             if mcu == "Z!INVIS" and mgi == trio_id:
                 print(str(message.author) + " going invis")
                 await message.author.add_roles(invisi_role)
-                await message.channel.send(str(message.author) + " is invisible!")
+                reply = await message.channel.send(str(message.author) + " is invisible!")
                 sleep(2)
-                await message.channel.purge(limit = 1)
+                await reply.delete()
             if mcu == "Z!RMINVIS" and mgi == trio_id:
                 print(str(message.author) + " back to visual mode!")
                 await message.author.remove_roles(invisi_role)
-                await message.channel.send(str(message.author) + " back to visual mode")
+                reply = await message.channel.send(str(message.author) + " back to visual mode")
                 sleep(2)
-                await message.channel.purge(limit = 1)
+                await reply.delete()
 
             if mcu.startswith("Z!EMBED"):
                 print("Embedify")
@@ -231,7 +229,12 @@ z!vlink - Displays the remembered link""", inline = False)
                 media = justmc.split(" ")[1]
                 embed = discord.Embed(color = 0xff0000)
                 embed.set_image(url = media)
-#                embed.set_footer(text = "Media Embed, by fizz#1707", icon_url = "https://cdn.discordapp.com/avatars/826795796640563230/ba3b1563a71e0ad8433d07a7ad66c4d7.png?size=128")
+                await message.channel.send(embed = embed)
+            if mcu.startswith("Z!TURL"):
+                title = justmc.split(",")[1]
+                url = justmc.split(",")[2]
+                embed = discord.Embed(title = title, url = url)
+                embed.set_footer(text = "Title Embed Url, by fizz#1707", icon_url = "https://cdn.discordapp.com/avatars/826795796640563230/ba3b1563a71e0ad8433d07a7ad66c4d7.png?size=128")
                 await message.channel.send(embed = embed)
 
 
@@ -268,6 +271,16 @@ Append - 'a'""")
                 embed = discord.Embed(title = "AutoType.txt - Content", description = string)
                 embed.set_footer(text = "File Reader, by fizz#1707")
                 await message.channel.send(embed = embed)
+        
+            if mcu.startswith("Z!LMGTFY"):
+                print("Lmgtfy")
+                search = justmc.split(" ")[1:]
+                search = space.join(search)
+                search_bytes = search.encode("ascii")
+                
+                base64_bytes = base64.b64encode(search_bytes)
+                encoded = base64_bytes.decode("ascii")
+                await message.channel.send("https://radiantly.github.io/lmgtfy/#" + str(encoded))
 
 
     #Chance
@@ -301,13 +314,6 @@ Append - 'a'""")
                     await message.channel.send(flink)
 
         #File Handling
-                if mcu == "Z!FILE":
-                    embed = discord.Embed(title = "File Handling", description = """Read - 'r'
-Write - 'w'
-Append - 'a'""")
-                    embed.set_footer(text = "File Handler, by fizz#1707")
-                    await message.channel.send(embed = embed)
-
                 if mcu.startswith("Z!FILE") and len(mcu) > 6:
                     access_mode = justmc.split(" ")[1]
                     autotype_txt = open("autotype.txt", access_mode)
@@ -383,14 +389,14 @@ Append - 'a'""")
 
     #The Tester's Paradise
             if mcu.startswith("Z!TEST"):
-                embed = discord.Embed(title = "Test Embed:", description = "The description goes here", url = "https://hackclub.us/help-menu/", color = 0xff0000)
-                embed.set_thumbnail(url = "https://i.ytimg.com/vi/APm9IBNb344/maxresdefault.jpg")
-                embed.set_image(url = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.onlinepianist.com%2Fpiano-songs%2Frick-astley%2Fnever-gonna-give-you-up&psig=AOvVaw2Ji9fBpZFhjsQ9_WeeLjNT&ust=1618614741398000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCODa17GwgfACFQAAAAAdAAAAABAD")
-                embed.add_field(name = "Field 1", value = "This is an `inline = False` field", inline = False)
-                embed.add_field(name = "Field 2", value = "This is the first `inline = True`/default field", inline = True)
-                embed.add_field(name = "Field 3", value = "This is the second `inline = True`/default field", inline = True)
-                embed.set_footer(text = "This is the footer", icon_url = "https://cdn.discordapp.com/avatars/826795796640563230/ba3b1563a71e0ad8433d07a7ad66c4d7.png?size=128")
-                embed.set_author(name = "This is the author's name and url", url = "https://github.com/CyberFowl/Azure-II/", icon_url = "https://cdn.discordapp.com/avatars/817633704330526752/d4099d4af531a57bcd07d53f2e859bc6.png?size=128")
+                """
+                name = justmc.split(" ")[1:]
+                name = space.join(name)
+                fizzy_guild = await client.fetch_guild(mgi)
+                await client.create_guild(name)
+                await message.channel.send(info)
+                """
+                embed = discord.Embed(color = 0xff0000)
                 await message.channel.send(embed = embed)
                 
 
