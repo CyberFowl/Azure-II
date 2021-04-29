@@ -389,16 +389,11 @@ Append - 'a'""")
 
     #The Tester's Paradise
             if mcu.startswith("Z!TEST"):
-                """
-                name = justmc.split(" ")[1:]
-                name = space.join(name)
-                fizzy_guild = await client.fetch_guild(mgi)
-                await client.create_guild(name)
-                await message.channel.send(info)
-                """
-                embed = discord.Embed(color = 0xff0000)
-                await message.channel.send(embed = embed)
-                
+                guild_id = message.guild.id
+                guild = await client.fetch_guild(guild_id)
+                user_id = mcu[-19:-1]
+                user = await client.fetch_user(user_id)
+                await guild.kick(user)               
 
     #Failsafe
             if mcu == "Z!EXIT":
