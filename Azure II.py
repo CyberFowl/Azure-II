@@ -44,16 +44,24 @@ class MyClient(discord.Client):
         cyberfowl = 743009565242556526
         nighthawk = 794570615041556532
         rep = 813957898434379818
+        
+        reethedes = 690227486721966130
+        
+        business = 360084558265450496
+        wiseman = 764146647126900807
+        vampire_king = 802193232996859994
+        
         rammy = 737661910194847836
         vaidehi = 546546354365435655
 
         guild_ids = [trio_id, fizzy_id]
         owner = [fizz, cyberfowl, nighthawk, rep]
+        permit = [fizz, cyberfowl, nighthawk, rep, reethedes, rammy, vaidehi, business, wiseman, vampire_king]
 
         if mgi in guild_ids:
             pass
 
-        if message.author != client.user and mgi in guild_ids or message.author.id in owner:
+        if message.author != client.user and mgi in guild_ids or message.author.id in permit:
 
 
 #Variables/Lists
