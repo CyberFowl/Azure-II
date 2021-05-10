@@ -41,17 +41,21 @@ class MyClient(discord.Client):
         fizgen_id = 818895293428531224
 
         fizz = 817633704330526752
+        cyberfowl = 743009565242556526
+        nighthawk = 794570615041556532
+        rep = 813957898434379818
         rammy = 737661910194847836
         vaidehi = 546546354365435655
 
         guild_ids = [trio_id, fizzy_id]
+        owner = [fizz, cyberfowl, nighthawk, rep]
 
         if mgi in guild_ids:
             pass
 
-        if message.author != client.user and mgi in guild_ids:
+        if message.author != client.user and mgi in guild_ids or message.author.id in owner:
 
-                
+
 #Variables/Lists
     #Emojis
 
