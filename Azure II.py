@@ -16,8 +16,8 @@ class MyClient(discord.Client):
         choice = random.randint(0, len(games)-1)
 
         game = discord.Game(games[choice])
-        await client.change_presence(status=discord.Status.dnd, activity=game)
-
+        await client.change_presence(status=discord.Status.invisible)#, activity=game)
+        
 
     async def on_message(self, message):
         
@@ -141,11 +141,11 @@ z!vlink - Displays the remembered link""", inline = False)
         #Individual
             if mcu == "Z!BEGIN":
                 print("Restart time")
-                await message.channel.send("Azure was last restarted at " + restart_time + " IST")
+                await message.channel.send("Azure was last restarted at {} IST".format(restart_time))
 
             if mcu == "Z!PING":
                 print("Azure's ping")
-                await message.channel.send(":ping_pong: Pong! | Message took ***" + bot_ping + "ms*** to respond")
+                await message.channel.send(":ping_pong: Pong! | Message took ***{}ms*** to respond".format(bot_ping))
 
         #Bulk
             if mcu == "Z!STATS":
@@ -164,19 +164,32 @@ z!vlink - Displays the remembered link""", inline = False)
                 purge = mcu.split(" ")[-1]
                 if int(purge) < 1000:
                     await message.channel.purge(limit = int((purge)) + 1)
-                    await message.channel.send(purge + " messages purged")
+                    await message.channel.send("{} messages purged".format(purge))
                     sleep(2)
                     await message.channel.purge(limit = 1)
-                    print(purge + " messages purged")
-                if int(purge) >= 1000:
+                    print("{} messages purged".format(purge))
+                if int(purge) > 1001:
                     await message.channel.send("Purge limit exceeded. Please specify a number below 1000.")
                     print("Purge limit exceeded")
+
+            if mcu.startswith("Z!AUDIT"):
+                limit = mcu.split(" ")[-1]
+                guild = client.get_guild(message.guild.id)
+                if int(limit) < 21:
+                    async for entry in guild.audit_logs(limit = int(limit)):
+                        await message.channel.send('{0.user} did {0.action} to {0.target}'.format(entry))
+                    
+                    print("{} accessed last {} audit logs in {}".format(message.author, limit, message.guild.name))
+
+                if int(limit) > 20:
+                    await message.channel.send("Entry limit exceeded. Please specify a number below 20.")
+                    print("Audit entry limit exceeded.")
 
             if mcu.startswith("Z!PLAN"):
                 content = justmc.split(" ")[1:]
                 space = " "
                 string = space.join(content)
-                embed = discord.Embed(title = ":asterisk: " + string)
+                embed = discord.Embed(title = ":asterisk: {}".format(string))
                 embed.set_footer(text = "Planner, by fizz#1707")
                 planner = client.get_channel(826117936271589377)
                 await planner.send(embed = embed)
@@ -191,15 +204,15 @@ z!vlink - Displays the remembered link""", inline = False)
                 await message.channel.send(str(user.avatar_url))
 
             if mcu == "Z!INVIS" and mgi == trio_id:
-                print(str(message.author) + " going invis")
+                print("{} going invis".format(message.author))
                 await message.author.add_roles(invisi_role)
-                reply = await message.channel.send(str(message.author) + " is invisible!")
+                reply = await message.channel.send(str("{} is invisible!".format(message.author))
                 sleep(2)
                 await reply.delete()
             if mcu == "Z!RMINVIS" and mgi == trio_id:
-                print(str(message.author) + " back to visual mode!")
+                print("{} back to visual mode!".format(message.author))
                 await message.author.remove_roles(invisi_role)
-                reply = await message.channel.send(str(message.author) + " back to visual mode")
+                reply = await message.channel.send("{} back to visual mode".format(message.author))
                 sleep(2)
                 await reply.delete()
 
@@ -406,9 +419,9 @@ Append - 'a'""")
             if mcu.startswith("Z!TEST"):
                 guild_id = message.guild.id
                 guild = await client.fetch_guild(guild_id)
-                user_id = mcu[-19:-1]
-                user = await client.fetch_user(user_id)
-                await guild.kick(user)
+                #user_id = mcu[-19:-1]
+                #user = await client.fetch_user(user_id)
+                #await guild.kick(user)
 
             if mcu.startswith("Z!MOBILE"):
                 #user_id = mcu[-19:-1]
@@ -423,8 +436,8 @@ Append - 'a'""")
                 await message.delete()
                 shutdown_msg = await message.channel.send("Azure The Second is shutting down now.")
                 sleep(2)
-                await shutdown_msg.edit(content = "<@!" + str(fizz) + ">, Azure The Second was shutdown by <@!" + str(message.author.id) + ">")
-                print("Azure The Second was shutdown by " + str(message.author))
+                await shutdown_msg.edit(content = "<@!{}>, Azure The Second was shutdown by <@!{}>".format(fizz,message.author.id))
+                print("Azure The Second was shutdown by {}".format(message.author))
                 sys.exit()
 
 
