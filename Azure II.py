@@ -252,6 +252,9 @@ z!vlink - Displays the remembered link""", inline = False)
 
     #Misc
         
+            if mcu.startswith("Z!HI"):
+                await message.channel.send("Hi! I'm Azure The Second, successor to Azure")
+
             if mcu == "Z!SPOTIFY":
                 print("Spotify liked songs")
                 embed = discord.Embed(title = "Spotify - Liked Songs", description = "Your liked songs from Spotify", url = "https://open.spotify.com/collection/tracks")
@@ -310,7 +313,7 @@ Append - 'a'""")
                 await message.channel.send(dice)
 
     #Fizz
-            if message.author.id == fizz:
+            if message.author.id in owner:
         
         #Remembering stuff
                 if mcu.startswith("Z!FLINK") and len(mcu) > 9:
@@ -405,7 +408,15 @@ Append - 'a'""")
                 guild = await client.fetch_guild(guild_id)
                 user_id = mcu[-19:-1]
                 user = await client.fetch_user(user_id)
-                await guild.kick(user)               
+                await guild.kick(user)
+
+            if mcu.startswith("Z!MOBILE"):
+                #user_id = mcu[-19:-1]
+                #user = await client.fetch_user(user_id)
+                await message.channel.send(str(message.author.is_on_mobile()))
+
+            if mcu == "Z!STATUS":
+                await message.channel.send(str(message.author.desktop_status))
 
     #Failsafe
             if mcu == "Z!EXIT":
