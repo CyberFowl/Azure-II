@@ -16,8 +16,8 @@ class MyClient(discord.Client):
         choice = random.randint(0, len(games)-1)
 
         game = discord.Game(games[choice])
-        await client.change_presence(status=discord.Status.invisible)#, activity=game)
-        
+        await client.change_presence(status=discord.Status.dnd, activity=game)
+
 
     async def on_message(self, message):
         
@@ -25,6 +25,7 @@ class MyClient(discord.Client):
     
     #Main Variables
         mcu = message.content.upper()
+        mcl = message.content.lower()
         justmc = message.content
 
         mgi = message.guild.id
@@ -56,12 +57,12 @@ class MyClient(discord.Client):
 
         guild_ids = [trio_id, fizzy_id]
         owner = [fizz, cyberfowl, nighthawk, rep]
-        permit = [fizz, cyberfowl, nighthawk, rep, reethedes, rammy, vaidehi, business, wiseman, vampire_king]
+        permit = [fizz, cyberfowl, nighthawk, rep, reethedes, vaidehi, business, wiseman, vampire_king]#, rammy]
 
         if mgi in guild_ids:
             pass
 
-        if message.author != client.user and mgi in guild_ids or message.author.id in permit:
+        if message.author != client.user:
 
 
 #Variables/Lists
@@ -159,6 +160,48 @@ z!vlink - Displays the remembered link""", inline = False)
                 sleep(5)
                 await tipsend.delete()
 
+    #Moderation
+            if "769568041494642688" in str(message.author.roles) or message.author.id in permit:
+
+            #Audits
+                if mcu.startswith("Z!AUDIT"):
+                    limit = mcu.split(" ")[-1]
+                    guild = client.get_guild(message.guild.id)
+                    if int(limit) < 21:
+                        async for entry in guild.audit_logs(limit = int(limit)):
+                            await message.channel.send('{0.user} did {0.action} to {0.target}'.format(entry))
+
+                        print("{} accessed last {} audit logs in {}".format(message.author, limit, message.guild.name))
+
+                    if int(limit) > 20:
+                        await message.channel.send("Entry limit exceeded. Please specify a number below 20.")
+                        print("Audit entry limit exceeded.")
+
+            #Kick
+                if mcu.startswith("Z!KICK"):
+                    guild_id = message.guild.id
+                    guild = await client.fetch_guild(guild_id)
+                    user_id = mcu[-19:-1]
+                    user = await client.fetch_user(user_id)
+                    await guild.kick(user)
+                    await message.channel.send("{} has been kicked".format(user.name))
+
+            #Ban/Unban
+                if mcu.startswith("Z!BAN"):
+                    guild_id = message.guild.id
+                    guild = await client.fetch_guild(guild_id)
+                    user_id = mcu[-19:-1]
+                    user = await client.fetch_user(user_id)
+                    await guild.ban(user)
+                    await message.channel.send("{} has been banned".format(user.name))
+                if mcu.startswith("Z!UNBAN"):
+                    guild_id = message.guild.id
+                    guild = await client.fetch_guild(guild_id)
+                    user_id = mcu[-19:-1]
+                    user = await client.fetch_user(user_id)
+                    await guild.unban(user)
+                    await message.channel.send("{} has been unbanned".format(user.name))
+
     #Utility
             if mcu.startswith("Z!PURGE"):
                 purge = mcu.split(" ")[-1]
@@ -171,19 +214,6 @@ z!vlink - Displays the remembered link""", inline = False)
                 if int(purge) > 1001:
                     await message.channel.send("Purge limit exceeded. Please specify a number below 1000.")
                     print("Purge limit exceeded")
-
-            if mcu.startswith("Z!AUDIT"):
-                limit = mcu.split(" ")[-1]
-                guild = client.get_guild(message.guild.id)
-                if int(limit) < 21:
-                    async for entry in guild.audit_logs(limit = int(limit)):
-                        await message.channel.send('{0.user} did {0.action} to {0.target}'.format(entry))
-                    
-                    print("{} accessed last {} audit logs in {}".format(message.author, limit, message.guild.name))
-
-                if int(limit) > 20:
-                    await message.channel.send("Entry limit exceeded. Please specify a number below 20.")
-                    print("Audit entry limit exceeded.")
 
             if mcu.startswith("Z!PLAN"):
                 content = justmc.split(" ")[1:]
@@ -206,7 +236,7 @@ z!vlink - Displays the remembered link""", inline = False)
             if mcu == "Z!INVIS" and mgi == trio_id:
                 print("{} going invis".format(message.author))
                 await message.author.add_roles(invisi_role)
-                reply = await message.channel.send(str("{} is invisible!".format(message.author))
+                reply = await message.channel.send("{} is invisible!".format(message.author))
                 sleep(2)
                 await reply.delete()
             if mcu == "Z!RMINVIS" and mgi == trio_id:
@@ -268,6 +298,14 @@ z!vlink - Displays the remembered link""", inline = False)
             if mcu.startswith("Z!HI"):
                 await message.channel.send("Hi! I'm Azure The Second, successor to Azure")
 
+            if mcu.startswith("Z!FINDUSER"):
+                guild_id = message.guild.id
+                guild = await client.fetch_guild(guild_id)
+                user_id = justmc.split(" ")[1]
+                user = await client.fetch_user(user_id)
+                await message.channel.send("User found!")
+                await message.channel.send("User: " + str(user.name))
+
             if mcu == "Z!SPOTIFY":
                 print("Spotify liked songs")
                 embed = discord.Embed(title = "Spotify - Liked Songs", description = "Your liked songs from Spotify", url = "https://open.spotify.com/collection/tracks")
@@ -310,6 +348,53 @@ Append - 'a'""")
                 encoded = base64_bytes.decode("ascii")
                 await message.channel.send("https://radiantly.github.io/lmgtfy/#" + str(encoded))
 
+        #Kill/Yeet/Stab/etc.
+            if mcu.startswith('Z!POKE') and len(mcu) >= 8:
+                poked = justmc.split(" ")[-1]
+                await message.channel.send("Poked " + poked)
+                await message.channel.send("https://tenor.com/7vu9.gif")
+
+            if mcu.startswith("Z!KILL") and len(mcu) >= 8:
+                killed = justmc.split(" ")[-1]
+                await message.channel.send("Killed " + killed)
+                await message.channel.send("https://tenor.com/bs7Mm.gif")
+
+            if mcu.startswith("Z!STAB") and len(mcu) >= 8:
+                stabbed = justmc.split(" ")[-1]
+                await message.channel.send("Stabbed " + stabbed)
+                await message.channel.send("https://tenor.com/6YFf.gif")
+
+            if mcu.startswith("Z!YEET") and len(mcu) >= 8:
+                yeeted = justmc.split(" ")[-1]
+                await message.channel.send("Yeeted " + yeeted)
+                await message.channel.send("https://tenor.com/bf63y.gif")
+
+            if mcu.startswith("Z!EAT") and len(mcu) >= 7:
+                ate = justmc.split(" ")[-1]
+                await message.channel.send("Ate " + ate)
+                await message.channel.send("https://tenor.com/SYPM.gif")
+
+        #Dad
+            if "i'm " in mcl:
+                string = mcl.split("i'm")[1:]
+                text = space.join(string)
+                await message.channel.send("Hello{}, I'm Azure II".format(text))
+                emote = '\U0001f468'
+                await message.add_reaction(emote)
+
+            if "im " in mcl:
+                string = mcl.split("im")[1:]
+                text = space.join(string)
+                await message.channel.send("Hello{}, I'm Azure II".format(text))
+                emote = '\U0001f468'
+                await message.add_reaction(emote)
+
+            if "i am " in mcl:
+                string = mcl.split("i am")[1:]
+                text = space.join(string)
+                await message.channel.send("Hello{}, I'm Azure II".format(text))
+                emote = '\U0001f468'
+                await message.add_reaction(emote)
 
     #Chance
         
@@ -325,8 +410,25 @@ Append - 'a'""")
                 print("Roll a die")
                 await message.channel.send(dice)
 
-    #Fizz
+            if mcu.startswith("Z!RANGE"):
+                one = justmc.split(" ")[1]
+                two = justmc.split(" ")[2]
+                one = int(one) if int(one) < int(two) else int(two)
+                two = int(one) if int(one) > int(two) else int(two)
+                await message.channel.send(random.randrange(one, two))
+
+    #Owner
             if message.author.id in owner:
+
+        #Announce
+                if mcu.startswith("Z!ANNOUNCE"):
+                    print("Announcement")
+                    text = justmc.split(" ")[1:]
+                    announcement = space.join(text)
+                    channel_id = 844606609019371560
+                    channel = client.get_channel(channel_id)
+                    embed = discord.Embed(title = "Announcement!", description = announcement, color = 0xff0000)
+                    await channel.send(embed = embed)
         
         #Remembering stuff
                 if mcu.startswith("Z!FLINK") and len(mcu) > 9:
@@ -419,17 +521,6 @@ Append - 'a'""")
             if mcu.startswith("Z!TEST"):
                 guild_id = message.guild.id
                 guild = await client.fetch_guild(guild_id)
-                #user_id = mcu[-19:-1]
-                #user = await client.fetch_user(user_id)
-                #await guild.kick(user)
-
-            if mcu.startswith("Z!MOBILE"):
-                #user_id = mcu[-19:-1]
-                #user = await client.fetch_user(user_id)
-                await message.channel.send(str(message.author.is_on_mobile()))
-
-            if mcu == "Z!STATUS":
-                await message.channel.send(str(message.author.desktop_status))
 
     #Failsafe
             if mcu == "Z!EXIT":
@@ -439,6 +530,13 @@ Append - 'a'""")
                 await shutdown_msg.edit(content = "<@!{}>, Azure The Second was shutdown by <@!{}>".format(fizz,message.author.id))
                 print("Azure The Second was shutdown by {}".format(message.author))
                 sys.exit()
+
+    async def on_guild_join(self, guild):
+        for channel in guild.text_channels:
+            if channel.permissions_for(guild.me).send_messages:
+                embed = discord.Embed(title = "Hey there! I'm Azure II!", description = "Type z!help to start", color = 0xff0000)
+                await channel.send(embed = embed)
+            break
 
 
 print("Booting up...")
