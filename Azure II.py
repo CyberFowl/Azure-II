@@ -5,6 +5,8 @@ import random
 import sys
 from time import time, ctime, sleep
 import base64
+import traceback
+from googlesearch import search
 
 t = time()
 
@@ -12,16 +14,17 @@ class MyClient(discord.Client):
     async def on_ready(self):
         print("Azure The Second online!")
 
-        games = ["with fizz#1707", "z!help", "GitHub.com/CyberFowl/Azure-II/", "with Azure", "tag", "WolfQuest"]
-        choice = random.randint(0, len(games)-1)
+        # games = ["with fizz#1707", "z!help", "GitHub.com/CyberFowl/Azure-II/", "with Azure", "tag", "WolfQuest"]
+        # choice = random.randint(0, len(games)-1)
+        # game = discord.Game(games[choice])
 
-        game = discord.Game(games[choice])
+        game = discord.Game("with Azure")
         await client.change_presence(status=discord.Status.dnd, activity=game)
 
 
     async def on_message(self, message):
         
-        global flink, rlink, vlink
+        global flink, rlink, vlink, search
     
     #Main Variables
         mcu = message.content.upper()
@@ -207,13 +210,22 @@ z!vlink - Displays the remembered link""", inline = False)
                 purge = mcu.split(" ")[-1]
                 if int(purge) < 1000:
                     await message.channel.purge(limit = int((purge)) + 1)
-                    await message.channel.send("{} messages purged".format(purge))
+                    reply = await message.channel.send("{} messages purged".format(purge))
                     sleep(2)
-                    await message.channel.purge(limit = 1)
+                    await reply.delete()
                     print("{} messages purged".format(purge))
                 if int(purge) > 1001:
                     await message.channel.send("Purge limit exceeded. Please specify a number below 1000.")
                     print("Purge limit exceeded")
+
+            if mcu.startswith("Z!GSEARCH"):
+                content = justmc.split(" ")[1:]
+                query = space.join(content)
+                ans = ""
+                for j in search(query, tld = "co.in", num = 5, stop = 5, pause = 2):
+                    ans = ans + ("\n<" + str(j) + ">")
+                await message.channel.send(ans)
+                print("Google")
 
             if mcu.startswith("Z!PLAN"):
                 content = justmc.split(" ")[1:]
@@ -297,6 +309,23 @@ z!vlink - Displays the remembered link""", inline = False)
         
             if mcu.startswith("Z!HI"):
                 await message.channel.send("Hi! I'm Azure The Second, successor to Azure")
+
+            if mcu.startswith("Z!ECHO "):
+                content = justmc.split(" ")[1:]
+                text = space.join(content)
+                await message.channel.send(text)
+                reply = await message.channel.send("Echoed")
+                sleep(2)
+                await reply.delete()
+
+            if mcu.startswith("Z!ECHOEMBED"):
+                content = justmc.split(" ")[1:]
+                text = space.join(content)
+                embed = discord.Embed(description = text, color = 0xff0000)
+                await message.channel.send(embed = embed)
+                reply = await message.channel.send("Echoed")
+                sleep(2)
+                await reply.delete()
 
             if mcu.startswith("Z!FINDUSER"):
                 guild_id = message.guild.id
@@ -429,6 +458,16 @@ Append - 'a'""")
                     channel = client.get_channel(channel_id)
                     embed = discord.Embed(title = "Announcement!", description = announcement, color = 0xff0000)
                     await channel.send(embed = embed)
+
+        #Update
+                if mcu.startswith("Z!UPDATE"):
+                    print("Update")
+                    text = justmc.split(" ")[1:]
+                    update = space.join(text)
+                    channel_id = 844606609019371560
+                    channel = client.get_channel(channel_id)
+                    embed = discord.Embed(title = "Update!", description = update, color = 0xff0000)
+                    await channel.send(embed = embed)
         
         #Remembering stuff
                 if mcu.startswith("Z!FLINK") and len(mcu) > 9:
@@ -537,7 +576,6 @@ Append - 'a'""")
                 embed = discord.Embed(title = "Hey there! I'm Azure II!", description = "Type z!help to start", color = 0xff0000)
                 await channel.send(embed = embed)
             break
-
 
 print("Booting up...")
 
