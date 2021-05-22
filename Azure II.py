@@ -11,6 +11,7 @@ from googlesearch import search
 t = time()
 
 class MyClient(discord.Client):
+
     async def on_ready(self):
         print("Azure The Second online!")
 
@@ -145,11 +146,11 @@ z!vlink - Displays the remembered link""", inline = False)
         #Individual
             if mcu == "Z!BEGIN":
                 print("Restart time")
-                await message.channel.send("Azure was last restarted at {} IST".format(restart_time))
+                await message.channel.send(f"Azure was last restarted at {restart_time} IST")
 
             if mcu == "Z!PING":
                 print("Azure's ping")
-                await message.channel.send(":ping_pong: Pong! | Message took ***{}ms*** to respond".format(bot_ping))
+                await message.channel.send(f":ping_pong: Pong! | Message took ***{bot_ping}ms*** to respond")
 
         #Bulk
             if mcu == "Z!STATS":
@@ -174,7 +175,7 @@ z!vlink - Displays the remembered link""", inline = False)
                         async for entry in guild.audit_logs(limit = int(limit)):
                             await message.channel.send('{0.user} did {0.action} to {0.target}'.format(entry))
 
-                        print("{} accessed last {} audit logs in {}".format(message.author, limit, message.guild.name))
+                        print(f"{message.author} accessed last {limit} audit logs in {message.guild.name}")
 
                     if int(limit) > 20:
                         await message.channel.send("Entry limit exceeded. Please specify a number below 20.")
@@ -187,7 +188,7 @@ z!vlink - Displays the remembered link""", inline = False)
                     user_id = mcu[-19:-1]
                     user = await client.fetch_user(user_id)
                     await guild.kick(user)
-                    await message.channel.send("{} has been kicked".format(user.name))
+                    await message.channel.send(f"{user.name} has been kicked")
 
             #Ban/Unban
                 if mcu.startswith("Z!BAN"):
@@ -196,24 +197,24 @@ z!vlink - Displays the remembered link""", inline = False)
                     user_id = mcu[-19:-1]
                     user = await client.fetch_user(user_id)
                     await guild.ban(user)
-                    await message.channel.send("{} has been banned".format(user.name))
+                    await message.channel.send(f"{user.name} has been banned")
                 if mcu.startswith("Z!UNBAN"):
                     guild_id = message.guild.id
                     guild = await client.fetch_guild(guild_id)
                     user_id = mcu[-19:-1]
                     user = await client.fetch_user(user_id)
                     await guild.unban(user)
-                    await message.channel.send("{} has been unbanned".format(user.name))
+                    await message.channel.send(f"{user.name} has been unbanned")
 
     #Utility
             if mcu.startswith("Z!PURGE"):
                 purge = mcu.split(" ")[-1]
                 if int(purge) < 1000:
                     await message.channel.purge(limit = int((purge)) + 1)
-                    reply = await message.channel.send("{} messages purged".format(purge))
+                    reply = await message.channel.send(f"{purge} messages purged")
                     sleep(2)
                     await reply.delete()
-                    print("{} messages purged".format(purge))
+                    print(f"{purge} messages purged")
                 if int(purge) > 1001:
                     await message.channel.send("Purge limit exceeded. Please specify a number below 1000.")
                     print("Purge limit exceeded")
@@ -223,7 +224,7 @@ z!vlink - Displays the remembered link""", inline = False)
                 query = space.join(content)
                 ans = ""
                 for j in search(query, tld = "co.in", num = 5, stop = 5, pause = 2):
-                    ans = ans + ("\n<" + str(j) + ">")
+                    ans = ans + (f"\n<{j}>")
                 await message.channel.send(ans)
                 print("Google")
 
@@ -231,14 +232,14 @@ z!vlink - Displays the remembered link""", inline = False)
                 content = justmc.split(" ")[1:]
                 space = " "
                 string = space.join(content)
-                embed = discord.Embed(title = ":asterisk: {}".format(string))
+                embed = discord.Embed(title = f":asterisk: {string}")
                 embed.set_footer(text = "Planner, by fizz#1707")
                 planner = client.get_channel(826117936271589377)
                 await planner.send(embed = embed)
                 print("New plan")
 
             if mcu == "Z!AVATAR":
-                print(str(message.author) + " avatar")
+                print(f"{message.author} avatar")
                 await message.channel.send(str(message.author.avatar_url))
             if mcu.startswith("Z!AVATAR") and "<@" in mcu:
                 user_id = mcu[-19:-1]
@@ -246,15 +247,15 @@ z!vlink - Displays the remembered link""", inline = False)
                 await message.channel.send(str(user.avatar_url))
 
             if mcu == "Z!INVIS" and mgi == trio_id:
-                print("{} going invis".format(message.author))
+                print(f"{message.author} going invis")
                 await message.author.add_roles(invisi_role)
-                reply = await message.channel.send("{} is invisible!".format(message.author))
+                reply = await message.channel.send(f"{message.author} is invisible!")
                 sleep(2)
                 await reply.delete()
             if mcu == "Z!RMINVIS" and mgi == trio_id:
-                print("{} back to visual mode!".format(message.author))
+                print(f"{message.author} back to visual mode!")
                 await message.author.remove_roles(invisi_role)
-                reply = await message.channel.send("{} back to visual mode".format(message.author))
+                reply = await message.channel.send(f"{message.author} back to visual mode")
                 sleep(2)
                 await reply.delete()
 
@@ -333,7 +334,18 @@ z!vlink - Displays the remembered link""", inline = False)
                 user_id = justmc.split(" ")[1]
                 user = await client.fetch_user(user_id)
                 await message.channel.send("User found!")
-                await message.channel.send("User: " + str(user.name))
+                await message.channel.send(f"User: {user.name}")
+
+            if mcu.startswith("Z!GETUSER"):
+                guild_id = message.guild.id
+                guild = await client.fetch_guild(guild_id)
+                user = justmc.split(" ")[1]
+                user = guild.get_member_named(user)
+                if str(user).lower() != "none":
+                    await message.channel.send("User found!")
+                    await message.channel.send(f"User: {user}")
+                else:
+                    await message.channel.send("User not found")
 
             if mcu == "Z!SPOTIFY":
                 print("Spotify liked songs")
@@ -375,53 +387,53 @@ Append - 'a'""")
                 
                 base64_bytes = base64.b64encode(search_bytes)
                 encoded = base64_bytes.decode("ascii")
-                await message.channel.send("https://radiantly.github.io/lmgtfy/#" + str(encoded))
+                await message.channel.send(f"https://radiantly.github.io/lmgtfy/#{encoded}")
 
         #Kill/Yeet/Stab/etc.
             if mcu.startswith('Z!POKE') and len(mcu) >= 8:
                 poked = justmc.split(" ")[-1]
-                await message.channel.send("Poked " + poked)
+                await message.channel.send(f"Poked {poked}")
                 await message.channel.send("https://tenor.com/7vu9.gif")
 
             if mcu.startswith("Z!KILL") and len(mcu) >= 8:
                 killed = justmc.split(" ")[-1]
-                await message.channel.send("Killed " + killed)
+                await message.channel.send(f"Killed {killed}")
                 await message.channel.send("https://tenor.com/bs7Mm.gif")
 
             if mcu.startswith("Z!STAB") and len(mcu) >= 8:
                 stabbed = justmc.split(" ")[-1]
-                await message.channel.send("Stabbed " + stabbed)
+                await message.channel.send(f"Stabbed {stabbed}")
                 await message.channel.send("https://tenor.com/6YFf.gif")
 
             if mcu.startswith("Z!YEET") and len(mcu) >= 8:
                 yeeted = justmc.split(" ")[-1]
-                await message.channel.send("Yeeted " + yeeted)
+                await message.channel.send(f"Yeeted {yeeted}")
                 await message.channel.send("https://tenor.com/bf63y.gif")
 
             if mcu.startswith("Z!EAT") and len(mcu) >= 7:
                 ate = justmc.split(" ")[-1]
-                await message.channel.send("Ate " + ate)
+                await message.channel.send(f"Ate {ate}")
                 await message.channel.send("https://tenor.com/SYPM.gif")
 
         #Dad
             if "i'm " in mcl:
                 string = mcl.split("i'm")[1:]
                 text = space.join(string)
-                await message.channel.send("Hello{}, I'm Azure II".format(text))
+                await message.channel.send(f"Hello{text}, I'm Azure II")
                 emote = '\U0001f468'
                 await message.add_reaction(emote)
 
             if "im " in mcl:
                 string = mcl.split("im")[1:]
                 text = space.join(string)
-                await message.channel.send("Hello{}, I'm Azure II".format(text))
+                await message.channel.send(f"Hello{text}, I'm Azure II")
                 emote = '\U0001f468'
                 await message.add_reaction(emote)
 
             if "i am " in mcl:
                 string = mcl.split("i am")[1:]
                 text = space.join(string)
-                await message.channel.send("Hello{}, I'm Azure II".format(text))
+                await message.channel.send(f"Hello{text}, I'm Azure II")
                 emote = '\U0001f468'
                 await message.add_reaction(emote)
 
@@ -491,7 +503,7 @@ Append - 'a'""")
                         print("File Writer")
                         write_string = justmc.split(" ")[2:]
                         string = space.join(write_string)
-                        writedoc = autotype_txt.write(string + "\n")
+                        writedoc = autotype_txt.write(f"{string}\n")
                         await message.channel.send("Overwritten file :grin:")
 
                         readdoc = autotype_txt.readlines()
@@ -508,7 +520,7 @@ Append - 'a'""")
                         print("File Appender")
                         write_string = justmc.split(" ")[2:]
                         string = space.join(write_string)
-                        writedoc = autotype_txt.write(string + "\n")
+                        writedoc = autotype_txt.write(f"{string}\n")
                         await message.channel.send("Text appended :+1:")
 
                         readdoc = autotype_txt.readlines()
@@ -559,15 +571,22 @@ Append - 'a'""")
     #The Tester's Paradise
             if mcu.startswith("Z!TEST"):
                 guild_id = message.guild.id
+                print(guild_id)
                 guild = await client.fetch_guild(guild_id)
+                print(guild)
+                user_id = mcu[-19:-1]
+                print(user_id)
+                user = guild.get_member(user_id)
+                print(user)
+                # await message.channel.send(f"{user.status}")
 
     #Failsafe
             if mcu == "Z!EXIT":
                 await message.delete()
                 shutdown_msg = await message.channel.send("Azure The Second is shutting down now.")
                 sleep(2)
-                await shutdown_msg.edit(content = "<@!{}>, Azure The Second was shutdown by <@!{}>".format(fizz,message.author.id))
-                print("Azure The Second was shutdown by {}".format(message.author))
+                await shutdown_msg.edit(content = f"<@!{fizz}>, Azure The Second was shutdown by <@!{message.author.id}>")
+                print(f"Azure The Second was shutdown by {message.author}")
                 sys.exit()
 
     async def on_guild_join(self, guild):
@@ -579,5 +598,7 @@ Append - 'a'""")
 
 print("Booting up...")
 
-client = MyClient()
+
+intents = discord.Intents.all()
+client = MyClient(intents=intents)
 client.run(token)
